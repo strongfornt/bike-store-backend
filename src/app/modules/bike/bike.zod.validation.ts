@@ -10,3 +10,13 @@ export const bikeZodValidationSchema = z.object({
   quantity: z.number().int().min(1).default(1),
   inStock: z.boolean().default(true),
 });
+
+export const bikeUpdateZodValidationSchema = z.object({
+  name: z.string().nonempty("Name is required").optional(),
+  brand: z.string().nonempty("Brand is required").optional(),
+  price: z.number().min(0, "Price must be a positive number").optional(),
+  category: z.enum(["Mountain", "Road", "Hybrid", "Electric"]).optional(),
+  description: z.string().nonempty("Description is required").optional(),
+  quantity: z.number().int().min(1).optional(),
+  inStock: z.boolean().optional(),
+})

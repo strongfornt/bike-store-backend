@@ -1,14 +1,17 @@
 import { Request, Response } from "express";
 import { bikeServices } from "./bike.service";
-import { bikeZodValidationSchema } from "./bike.zod.validation";
+import {
+  bikeUpdateZodValidationSchema,
+  bikeZodValidationSchema,
+} from "./bike.zod.validation";
 import { Types } from "mongoose";
 
 // create bike =================================================================
 const createBike = async (req: Request, res: Response) => {
   try {
-    const { bike } = req.body;
+    const { data } = req.body;
 
-    const zodParserData = bikeZodValidationSchema.parse(bike);
+    const zodParserData = bikeZodValidationSchema.parse(data);
     //will call services func to create bike data into db.
     const result = await bikeServices.createBikeIntoDB(zodParserData);
     //send response to the client
@@ -48,14 +51,14 @@ const getAllBike = async (req: Request, res: Response) => {
     res.status(200).json({
       message:
         "No bikes match the search criteria. Please try refining your search.",
-      success: true,
+      status: true,
       data: [],
     });
   } else {
     // return result
     res.status(200).json({
       message: "Bikes retrieved successfully",
-      success: true,
+      status: true,
       data: result,
     });
   }
@@ -63,21 +66,63 @@ const getAllBike = async (req: Request, res: Response) => {
 };
 
 // get specific bike by id =================================
-const getSpecificBike = async (req: Request, res: Response) => {
+const getSingleBike = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
-    const result = await bikeServices.getSpecificBikesFromDB(productId);
+    const result = await bikeServices.getSingleBikesFromDB(productId);
     res.status(200).json({
       message: "Bike retrieved successfully",
-      success: true,
+      status: true,
       data: result,
     });
   } catch (error: any) {
     res.status(404).json({
       message: "Bike not found with the given ID.",
-      success: false,
+      status: false,
       error,
       stack: error.stack || "No stack trace available",
+    });
+  }
+};
+
+// update bike by id ============================================================
+const updateSingleBike = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+    // parse tha data using zod validator =================================
+    const zodParserData = bikeUpdateZodValidationSchema.parse(req.body.data);
+
+    const { name, brand, price, category, description, quantity, inStock } =
+      zodParserData;
+      
+    const updatedData = {
+      $set: {
+        name,
+        brand,
+        price,
+        category,
+        description,
+        quantity,
+        inStock,
+        updatedAt: new Date().toISOString(),
+      },
+    };
+
+    const result = await bikeServices.updateSingleBikeIntoDB(
+      productId,
+      updatedData
+    );
+    res.status(200).json({
+      message: "Bike updated successfully",
+      status: true,
+      data: result,
+    });
+  } catch (error:any) {
+    res.status(400).json({
+      message: "Validation failed",
+      status: false,
+      error,
+      stack: error.stack,
     });
   }
 };
@@ -85,5 +130,6 @@ const getSpecificBike = async (req: Request, res: Response) => {
 export const bikeController = {
   createBike,
   getAllBike,
-  getSpecificBike,
+  getSingleBike,
+  updateSingleBike,
 };

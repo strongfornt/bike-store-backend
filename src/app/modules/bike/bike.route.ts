@@ -11,6 +11,7 @@ router.route('/')
 
 // single element route ==
 router.route('/:productId')
-        .get(bikeController.getSpecificBike)
+        .get(bikeController.getSingleBike)
+        .put(bikeController.updateSingleBike)
 
 export const BikeRoutes = router;        

@@ -15,12 +15,20 @@ const getAllBikesFromDB = async(filter: object) => {
 }
 
 // get specific bike from db =================================================================
-const getSpecificBikesFromDB = async(productId: string) => { 
+const getSingleBikesFromDB = async(productId: string) => { 
     const response = await BikeModel.findOne({_id:productId});
     return response;
 }
+
+// update single bike data
+const updateSingleBikeIntoDB = async (productId: string, updatedData:object) => {
+    const response = await BikeModel.findOneAndUpdate({_id:productId}, updatedData, { new: true })
+    return response;
+}
+
 export const bikeServices = {
     createBikeIntoDB,
     getAllBikesFromDB,
-    getSpecificBikesFromDB,
+    getSingleBikesFromDB,
+    updateSingleBikeIntoDB
 }
