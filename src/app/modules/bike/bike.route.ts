@@ -9,6 +9,8 @@ router.route('/')
         .get(bikeController.getAllBike)
         .post(bikeController.createBike)
 
-
+// single element route ==
+router.route('/:productId')
+        .get(bikeController.getSpecificBike)
 
 export const BikeRoutes = router;        

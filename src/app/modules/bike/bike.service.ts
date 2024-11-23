@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import { Bike } from "./bike.interface";
 import { BikeModel } from "./bike.model";
 
@@ -12,7 +13,14 @@ const getAllBikesFromDB = async(filter: object) => {
     const response = await BikeModel.find(filter);
     return response;
 }
+
+// get specific bike from db =================================================================
+const getSpecificBikesFromDB = async(productId: string) => { 
+    const response = await BikeModel.findOne({_id:productId});
+    return response;
+}
 export const bikeServices = {
     createBikeIntoDB,
-    getAllBikesFromDB
+    getAllBikesFromDB,
+    getSpecificBikesFromDB,
 }
