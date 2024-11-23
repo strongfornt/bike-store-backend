@@ -5,8 +5,8 @@ const router = express.Router();
 
 // create bike and get all bikes route ==
 
-router.route('/bike')
-        .get()
+router.route('/')
+        .get(bikeController.getAllBike)
         .post(bikeController.createBike)
 
 
