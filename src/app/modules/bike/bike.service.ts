@@ -8,8 +8,8 @@ const createBikeIntoDB = async(bike:Bike) => {
     return response; 
 }
 
-const getAllBikesFromDB = async() => { 
-    const response = await BikeModel.find();
+const getAllBikesFromDB = async(filter: object) => { 
+    const response = await BikeModel.find(filter);
     return response;
 }
 export const bikeServices = {

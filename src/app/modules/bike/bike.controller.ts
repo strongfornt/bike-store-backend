@@ -27,17 +27,40 @@ const createBike = async (req: Request, res: Response) => {
 
 // get bikes
 const getAllBike = async (req: Request, res: Response) => {
+  const { searchTerm } = req.query;
+  let filter = {};
+  // check if any query in request object
 
-    console.log(req.query);
-    
-    const result = await bikeServices.getAllBikesFromDB();
-    res.status(200).json({
-      message: "Bikes retrieved successfully",
-      success: true,
-      data: result,
-    });
-    
-    // possible error is server error, so i don't need error handler here , cause i am using global error handler for this.
+  if(searchTerm){
+    filter = {
+      $or: [
+        { name: { $regex: searchTerm, $options: "i" } },
+        { brand: { $regex: searchTerm, $options: "i" } },
+        { category: { $regex: searchTerm, $options: "i" } },
+      ],
+    };
+  }
+
+  // response to the client 
+  const result = await bikeServices.getAllBikesFromDB(filter);
+
+  if (result.length === 0) {
+   return res.status(200).json(
+      {
+        "message": "No bikes match the search criteria. Please try refining your search.",
+        "success": true,
+        "data": []
+      }      
+    )
+  }
+  // return result 
+  res.status(200).json({
+    message: "Bikes retrieved successfully",
+    success: true,
+    data: result,
+  });
+
+  // possible error is server error, so i don't need error handler here , cause i am using global error handler for this.
 };
 
 export const bikeController = {
