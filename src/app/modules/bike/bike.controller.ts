@@ -5,6 +5,7 @@ import {
   bikeZodValidationSchema,
 } from "./bike.zod.validation";
 import { Types } from "mongoose";
+import { CustomError } from "../../config/custom.error";
 
 // create bike =================================================================
 const createBike = async (req: Request, res: Response) => {
@@ -47,11 +48,15 @@ const getAllBike = async (req: Request, res: Response) => {
 
   // response to the client
   const result = await bikeServices.getAllBikesFromDB(filter);
-  if (result.length === 0) {
-    res.status(200).json({
-      message:
-        "No bikes match the search criteria. Please try refining your search.",
-      status: true,
+
+   // Check for empty results
+   if (result.length === 0) {
+    const message = searchTerm
+      ? "No bikes match the search criteria. Please try refining your search."
+      : "No bikes found in the database.";
+     res.status(404).json({
+      message,
+      status: false,
       data: [],
     });
   } else {
@@ -94,7 +99,7 @@ const updateSingleBike = async (req: Request, res: Response) => {
 
     const { name, brand, price, category, description, quantity, inStock } =
       zodParserData;
-      
+
     const updatedData = {
       $set: {
         name,
@@ -112,14 +117,19 @@ const updateSingleBike = async (req: Request, res: Response) => {
       productId,
       updatedData
     );
+
+    if (!result) { 
+     throw new CustomError(`Bike not found with the given id ${productId}`,404) 
+    }
+
     res.status(200).json({
       message: "Bike updated successfully",
       status: true,
       data: result,
     });
-  } catch (error:any) {
-    res.status(400).json({
-      message: "Validation failed",
+  } catch (error: any) {
+    res.status( error.statusCode ||400).json({
+      message: error instanceof CustomError ? error.message : "Validation failed",
       status: false,
       error,
       stack: error.stack,
