@@ -72,4 +72,5 @@ This project implements a Bike Store API using Express and TypeScript, integrate
  DB_URL= mongodb+srv://<username>:<password>@cluster0.v2tnkbl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 ### Run the Application:
-- node dist/server.js
+- tsc --watch
+- node dist/server.js (another terminal)
