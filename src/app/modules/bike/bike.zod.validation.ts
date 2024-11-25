@@ -7,7 +7,7 @@ export const bikeZodValidationSchema = z.object({
   category: z
     .enum(["Mountain", "Road", "Hybrid", "Electric"]),
   description: z.string().nonempty("Description is required"),
-  quantity: z.number().int().min(1).default(1),
+  quantity: z.number().int().min(0).default(1),
   inStock: z.boolean().default(true),
 });
 
@@ -17,6 +17,6 @@ export const bikeUpdateZodValidationSchema = z.object({
   price: z.number().min(0, "Price must be a positive number").optional(),
   category: z.enum(["Mountain", "Road", "Hybrid", "Electric"]).optional(),
   description: z.string().nonempty("Description is required").optional(),
-  quantity: z.number().int().min(1).optional(),
+  quantity: z.number().int().min(0).optional(),
   inStock: z.boolean().optional(),
 })

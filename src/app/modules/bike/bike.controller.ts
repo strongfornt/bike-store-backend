@@ -81,14 +81,17 @@ const getSingleBike = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
     const result = await bikeServices.getSingleBikesFromDB(productId);
+    if (!result) {
+      throw new CustomError("Bike not found with the given ID.", 404);
+    }
     res.status(200).json({
       message: "Bike retrieved successfully",
       status: true,
       data: result,
     });
   } catch (error: any) {
-    res.status(404).json({
-      message: "Bike not found with the given ID.",
+    res.status(error.statusCode || 400).json({
+      message: error.message || "An unexpected error occurred",
       status: false,
       error,
       stack: error.stack || "No stack trace available",
