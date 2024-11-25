@@ -14,7 +14,8 @@ app.use("/api/products", BikeRoutes);
 app.use("/api/orders", OrderBikeRoutes);
 
 app.get("/", (req: Request, res: Response) => {
-  console.log("Hello from server");
+  // console.log("Hello from server");
+  res.send("Hello from server")
 });
 
 
