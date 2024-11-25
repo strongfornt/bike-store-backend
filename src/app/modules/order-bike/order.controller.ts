@@ -32,7 +32,9 @@ const calculateTotalRevenue = async (req: Request, res: Response) => {
       res.status(200).json({
         message: "Revenue calculated successfully",
         status: true,
-        data: result,
+        data: {
+          totalRevenue: result
+        },
       });
   } catch (error: any) {
     res.status(500).json({
