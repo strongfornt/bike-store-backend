@@ -10,11 +10,10 @@ const app: Application = express();
 app.use(express.json());
 app.use(cookieParser())
 app.use(cors({origin: ['http://localhost:5173']}));
-app.set('view engine', 'ejs')
+
 
 app.get('/', async (req: Request, res: Response) => {
-  // res.send("Hello! You're at the starting point of something awesome.");
-  res.render('pages/about')
+  res.send("Hello! You're at the starting point of something awesome.");
 });
 
 //applications routes

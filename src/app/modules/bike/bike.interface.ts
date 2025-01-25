@@ -7,3 +7,6 @@ export interface Bike {
     quantity: number;
     inStock: boolean;
 }
+
+
+export interface IUpdatedBike extends Partial<Bike> {}

@@ -1,34 +1,24 @@
 import { Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import { CustomError } from "../../errors/custom.error";
+import catchAsync from "../../utils/catch-async";
+import sendResponse from "../../utils/sendResponse";
 import { bikeServices } from "./bike.service";
 import {
-  bikeUpdateZodValidationSchema,
-  bikeZodValidationSchema,
+  bikeUpdateZodValidationSchema
 } from "./bike.zod.validation";
-import { CustomError } from "../../errors/custom.error";
-import { StatusCodes } from "http-status-codes";
 
 // create bike =================================================================
-const createBike = async (req: Request, res: Response) => {
-  try {
-    const { data } = req.body;
-    const zodParserData = bikeZodValidationSchema.parse(data);
-    //will call services func to create bike data into db.
-    const result = await bikeServices.createBikeIntoDB(zodParserData);
-    //send response to the client
-    res.status(200).json({
-      message: "Bike created successfully",
-      success: true,
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(400).json({
-      message: "validation failed",
-      success: false,
-      error: error,
-      stack: error.stack,
-    });
-  }
-};
+const createBike = catchAsync(async (req, res, next) => {
+  const { data } = req.body;
+  const result = await bikeServices.createBikeIntoDB(data);
+  sendResponse(res, {
+    success: true,
+    message: "Bike created successfully",
+    statusCode: StatusCodes.OK,
+    data: result,
+  });
+});
 
 // get bikes =================================================================
 const getAllBike = async (req: Request, res: Response) => {
@@ -77,106 +67,46 @@ const getAllBike = async (req: Request, res: Response) => {
 };
 
 // get specific bike by id =================================
-const getSingleBike = async (req: Request, res: Response) => {
-  try {
-    const { productId } = req.params;
-    const result = await bikeServices.getSingleBikesFromDB(productId);
-    if (!result) {
-      throw new CustomError( 404,"Bike not found with the given ID.");
-    }
-    res.status(200).json({
-      message: "Bike retrieved successfully",
-      status: true,
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(error.statusCode || 400).json({
-      message: error.message || "An unexpected error occurred",
-      status: false,
-      error,
-      stack: error.stack || "No stack trace available",
-    });
-  }
-};
+const getSingleBike = catchAsync(async (req, res, next) => {
+  const { productId } = req.params;
+  const result = await bikeServices.getSingleBikesFromDB(productId);
+  sendResponse(res, {
+    success: true,
+    message: "Bike retrieved successfully",
+    statusCode: StatusCodes.OK,
+    data: result,
+  });
+});
 
 // update bike by id ============================================================
-const updateSingleBike = async (req: Request, res: Response) => {
-  try {
-    const { productId } = req.params;
-    // parse tha data using zod validator =================================
-    const zodParserData = bikeUpdateZodValidationSchema.parse(req.body.data);
+const updateSingleBike = catchAsync(async (req, res, next) => {
+    const {productId} = req.params;
+    const {data} = req.body;
 
-    const { name, brand, price, category, description, quantity, inStock } =
-      zodParserData;
+    const result = await bikeServices.updateSingleBikeIntoDB(productId, data)
 
-    const updatedData = {
-      $set: {
-        name,
-        brand,
-        price,
-        category,
-        description,
-        quantity,
-        inStock,
-        updatedAt: new Date().toISOString(),
-      },
-    };
-
-    const result = await bikeServices.updateSingleBikeIntoDB(
-      productId,
-      updatedData
-    );
-
-    if (!result) {
-      throw new CustomError(
-        StatusCodes.BAD_REQUEST
-        ,`Bike not found with the given id ${productId}`
-        
-      );
-    }
-    res.status(200).json({
+    sendResponse(res, {
+      success: true,
       message: "Bike updated successfully",
-      status: true,
+      statusCode: StatusCodes.OK,
       data: result,
     });
-  } catch (error: any) {
-    res.status(error.statusCode || 400).json({
-      message:
-        error instanceof CustomError ? error.message : "Validation failed",
-      status: false,
-      error,
-      stack: error.stack,
-    });
-  }
-};
+  
+})
+
 
 // delete bike from db by _id =================================
-const deleteSingleBike = async (req: Request, res: Response) => {
-  try {
-    const { productId } = req.params;
-    const result = await bikeServices.deleteSingleBikeFromDB(productId);
+const deleteSingleBike = catchAsync(async(req, res, next) => {
+  const { productId } = req.params;
+  const result = await bikeServices.deleteSingleBikeFromDB(productId);
+  sendResponse(res, {
+    success: true,
+    message: "Bike deleted successfully",
+    statusCode: StatusCodes.OK,
+    data: result,
+  });
 
-    if (result.deletedCount === 0) {
-      throw new CustomError(
-        404,
-        `Bike not found with the given id ${productId}`
-      );
-    }
-
-    res.status(200).json({
-      message: "Bike deleted successfully",
-      status: true,
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(error.statusCode || 400).json({
-      message: error.message || "An unexpected error occurred",
-      status: false,
-      error,
-      stack: error.stack || "No stack trace available",
-    });
-  }
-};
+})
 
 export const bikeController = {
   createBike,
