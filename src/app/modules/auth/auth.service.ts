@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { UserModel } from "../user/user.model";
 import { CustomError } from "../../errors/custom.error";
 import config from "../../config";
-import jwt from "jsonwebtoken"
+import { createToken } from "./auth.utils";
 
 const loginUser = async (payload: { email: string; password: string }) => {
   const isUserExists = await UserModel.isUserExistsByEmail(payload?.email);
@@ -33,13 +33,23 @@ const loginUser = async (payload: { email: string; password: string }) => {
     userId: isUserExists?._id,
     role: isUserExists?.role,
   };
-  const token = jwt.sign(jwtPayload, config.jwt_access_secret, {
-    expiresIn: config.jwt_access_expires_in,
-  });
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string,
+  );
+  const refreshToken = createToken(
+    jwtPayload,
+    config.jwt_refresh_secret as string,
+    config.jwt_refresh_expires_in as string,
+  );
 
 
-
-  return token;
+  return {
+    accessToken,
+    refreshToken
+  };
 };
 
 export const AuthServices = {
