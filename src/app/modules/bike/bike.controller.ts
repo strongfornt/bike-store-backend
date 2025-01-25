@@ -5,7 +5,7 @@ import {
   bikeZodValidationSchema,
 } from "./bike.zod.validation";
 import { Types } from "mongoose";
-import { CustomError } from "../../config/custom.error";
+import { CustomError } from "../../errors/custom.error";
 
 // create bike =================================================================
 const createBike = async (req: Request, res: Response) => {

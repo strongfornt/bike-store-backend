@@ -1,4 +1,4 @@
-import { CustomError } from "../../config/custom.error";
+import { CustomError } from "../../errors/custom.error";
 import { BikeModel } from "../bike/bike.model";
 import { Order } from "./order.interface";
 import { OrderModel } from "./order.model";

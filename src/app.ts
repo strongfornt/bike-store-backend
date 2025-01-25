@@ -1,29 +1,26 @@
-import express, { Application, NextFunction, Request, Response } from "express";
-import cors from "cors";
-import { BikeRoutes } from "./app/modules/bike/bike.route";
-import { GlobalErrorFunc } from "./app/global-error-handler";
-import { OrderBikeRoutes } from "./app/modules/order-bike/order.route";
-
-// import unHandledError from "./app/global-error-handler";
+import cors from 'cors';
+import express, { Application, Request, Response } from 'express';
+import  cookieParser from 'cookie-parser'
+import router from './app/router';
+import notFound from './app/middleware/not-found.api';
+import globalErrorHandler from './app/middleware/global.error';
 
 const app: Application = express();
 app.use(express.json());
-app.use(cors());
-// application routes
-app.use("/api/products", BikeRoutes);
-app.use("/api/orders", OrderBikeRoutes);
+app.use(cookieParser())
+app.use(cors({origin: ['http://localhost:5173']}));
 
-app.get("/", (req: Request, res: Response) => {
-  // console.log("Hello from server");
-  res.send("Hello from server")
+
+app.get('/', async (req: Request, res: Response) => {
+  res.send("Hello! You're at the starting point of something awesome.");
 });
 
+//applications routes
+app.use('/api', router)
 
-// Error handlers globally  ==========
-//handling 404 error
-app.use(GlobalErrorFunc.notFoundUrlError);
+// // global error handlers
+app.use(notFound);
+app.use(globalErrorHandler);
 
-// handle unHandledError (eg: server or any others)
-app.use(GlobalErrorFunc.unHandledError);
-
+// start the server
 export default app;
