@@ -1,12 +1,7 @@
-import { Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import { CustomError } from "../../errors/custom.error";
 import catchAsync from "../../utils/catch-async";
 import sendResponse from "../../utils/sendResponse";
 import { bikeServices } from "./bike.service";
-import {
-  bikeUpdateZodValidationSchema
-} from "./bike.zod.validation";
 
 // create bike =================================================================
 const createBike = catchAsync(async (req, res, next) => {
@@ -23,9 +18,7 @@ const createBike = catchAsync(async (req, res, next) => {
 // get bikes =================================================================
 
 const getAllBike = catchAsync(async (req, res, next) => {
-  
   const result = await bikeServices.getAllBikesFromDB(req?.query)
-
   sendResponse(res, {
     success: true,
     message: "Bikes retrieved successfully",

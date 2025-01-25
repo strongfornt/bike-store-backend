@@ -1,22 +1,31 @@
 import { z } from "zod";
 
-export const bikeZodValidationSchema = z.object({
-  name: z.string().nonempty("Name is required"),
-  brand: z.string().nonempty("Brand is required"),
+ const bikeZodValidationSchema = z.object({
+ data: z.object({
+  name: z.string({required_error:"Name is required"}),
+  brand: z.string({required_error:"Brand is required"}),
   price: z.number().min(0, "Price must be a positive number"),
   category: z
     .enum(["Mountain", "Road", "Hybrid", "Electric"]),
-  description: z.string().nonempty("Description is required"),
+  description: z.string({required_error:'Description is required'}),
   quantity: z.number().int().min(0).default(1),
   inStock: z.boolean().default(true),
+ }).strict()
 });
 
-export const bikeUpdateZodValidationSchema = z.object({
-  name: z.string().nonempty("Name is required").optional(),
-  brand: z.string().nonempty("Brand is required").optional(),
+ const bikeUpdateZodValidationSchema = z.object({
+ data: z.object({
+  name: z.string({required_error:"Name is required"}).optional(),
+  brand: z.string({required_error:"Brand is required"}).optional(),
   price: z.number().min(0, "Price must be a positive number").optional(),
   category: z.enum(["Mountain", "Road", "Hybrid", "Electric"]).optional(),
-  description: z.string().nonempty("Description is required").optional(),
+  description: z.string({required_error:'Description is required'}).optional(),
   quantity: z.number().int().min(0).optional(),
   inStock: z.boolean().optional(),
+ }).strict()
 })
+
+export const BikeValidationZodSchema = {
+  bikeZodValidationSchema,
+  bikeUpdateZodValidationSchema,
+}
