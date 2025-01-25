@@ -8,12 +8,12 @@ const createOrderIntoDB = async (order: Order) => {
   const bikeData = await BikeModel.findById(product);
 
   if (!bikeData) {
-    throw new CustomError("Product not found", 404);
+    throw new CustomError(404,"Product not found" );
   }
 
   // Check if the stock is sufficient
   if (bikeData.quantity < quantity) {
-    throw new CustomError("Insufficient stock", 400);
+    throw new CustomError( 400,"Insufficient stock");
   }
 
   // Step 2: Reduce the quantity

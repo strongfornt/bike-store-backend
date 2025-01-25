@@ -1,24 +1,13 @@
 import { StatusCodes } from "http-status-codes";
-import CustomError from "../../errors/Custom.error";
-import { TUser } from "./user.interface"
+import { TUser } from "./user.interface";
 import { UserModel } from "./user.model";
-
+import { CustomError } from "../../errors/custom.error";
 
 const registerUserIntoDB = async (payload: TUser) => {
-    const isUserAlreadyExist = await UserModel.isUserExistsByEmail(payload?.email)
-
-    if (isUserAlreadyExist) {
-        throw new CustomError(StatusCodes.CONFLICT, "User already exists!");
-    }
-
-    const response = await UserModel.create(payload);
-    return response
-}
-
-
-
-
+  const response = await UserModel.create(payload);
+  return response;
+};
 
 export const UserService = {
-    registerUserIntoDB,
-}
+  registerUserIntoDB,
+};

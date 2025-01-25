@@ -1,18 +1,20 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Application, Request, Response } from 'express';
-import  cookieParser from 'cookie-parser'
-import router from './app/router';
-import notFound from './app/middleware/not-found.api';
+// import router from './app/router';
 import globalErrorHandler from './app/middleware/global.error';
+import notFound from './app/middleware/not-found.api';
+import router from './app/router';
 
 const app: Application = express();
 app.use(express.json());
 app.use(cookieParser())
 app.use(cors({origin: ['http://localhost:5173']}));
-
+app.set('view engine', 'ejs')
 
 app.get('/', async (req: Request, res: Response) => {
-  res.send("Hello! You're at the starting point of something awesome.");
+  // res.send("Hello! You're at the starting point of something awesome.");
+  res.render('pages/about')
 });
 
 //applications routes

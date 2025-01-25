@@ -4,8 +4,8 @@ import {
   bikeUpdateZodValidationSchema,
   bikeZodValidationSchema,
 } from "./bike.zod.validation";
-import { Types } from "mongoose";
 import { CustomError } from "../../errors/custom.error";
+import { StatusCodes } from "http-status-codes";
 
 // create bike =================================================================
 const createBike = async (req: Request, res: Response) => {
@@ -53,7 +53,7 @@ const getAllBike = async (req: Request, res: Response) => {
       const message = searchTerm
         ? "No bikes match the search criteria. Please try refining your search."
         : "No bikes found in the database.";
-      throw new CustomError(message, 404);
+      throw new CustomError(StatusCodes.BAD_REQUEST, message);
     }
 
     // response to the client
@@ -82,7 +82,7 @@ const getSingleBike = async (req: Request, res: Response) => {
     const { productId } = req.params;
     const result = await bikeServices.getSingleBikesFromDB(productId);
     if (!result) {
-      throw new CustomError("Bike not found with the given ID.", 404);
+      throw new CustomError( 404,"Bike not found with the given ID.");
     }
     res.status(200).json({
       message: "Bike retrieved successfully",
@@ -129,8 +129,9 @@ const updateSingleBike = async (req: Request, res: Response) => {
 
     if (!result) {
       throw new CustomError(
-        `Bike not found with the given id ${productId}`,
-        404
+        StatusCodes.BAD_REQUEST
+        ,`Bike not found with the given id ${productId}`
+        
       );
     }
     res.status(200).json({
@@ -157,8 +158,8 @@ const deleteSingleBike = async (req: Request, res: Response) => {
 
     if (result.deletedCount === 0) {
       throw new CustomError(
-        `Bike not found with the given id ${productId}`,
-        404
+        404,
+        `Bike not found with the given id ${productId}`
       );
     }
 

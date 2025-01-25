@@ -4,8 +4,8 @@ import { UserService } from "./user.service";
 import { StatusCodes } from "http-status-codes";
 
 const registerUser = catchAsync(async (req, res, next) => {
-  const { body } = req.body;
-  const result = await UserService.registerUserIntoDB(body);
+  const { data } = req.body;
+  const result = await UserService.registerUserIntoDB(data);
   const { _id, name, email } = result;
   sendResponse(res, {
     success: true,

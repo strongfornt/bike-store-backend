@@ -5,7 +5,7 @@ import { UserController } from './user.controller';
 const router = express.Router();
 
 
-router.route('/')
+router.route('/register')
         .post(validationMiddleWare(UserValidationSchema.registerUserValidationSchema),
         UserController.registerUser
     )

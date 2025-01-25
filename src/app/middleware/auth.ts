@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { TUserRole } from "../modules/user/user.interface";
 import catchAsync from "../utils/catch-async";
-import CustomError from "../errors/Custom.error";
 import { StatusCodes } from "http-status-codes";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
 import { UserModel } from "../modules/user/user.model";
+import { CustomError } from "../errors/custom.error";
 
 const authMiddleware = (...requiredRoles: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -37,11 +37,11 @@ const authMiddleware = (...requiredRoles: TUserRole[]) => {
     }
 
     //checking if the user is blocked
-    const isBlocked = isUserExists?.isBlocked;
+    // const isBlocked = isUserExists?.isBlocked;
 
-    if (isBlocked) {
-      throw new CustomError(StatusCodes.FORBIDDEN, "This user is Blocked!");
-    }
+    // if (isBlocked) {
+    //   throw new CustomError(StatusCodes.FORBIDDEN, "This user is Blocked!");
+    // }
 
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new CustomError(

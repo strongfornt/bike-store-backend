@@ -4,7 +4,7 @@ import { z } from "zod";
 
 // Validation for the userSchema
 const registerUserValidationSchema = z.object({
-  body: z.object({
+  data: z.object({
     name: z.string({
       required_error: "Name is required",
     }),

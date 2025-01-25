@@ -13,10 +13,10 @@ const loginUser = async (payload: { email: string; password: string }) => {
   }
 
   //checking is user blocked or not
-  const userStatus = isUserExists?.isBlocked;
-  if (userStatus) {
-    throw new CustomError(StatusCodes.FORBIDDEN, "This user is blocked!");
-  }
+  // const userStatus = isUserExists?.isBlocked;
+  // if (userStatus) {
+  //   throw new CustomError(StatusCodes.FORBIDDEN, "This user is blocked!");
+  // }
 
   // checking is password matched
   if (
@@ -37,12 +37,12 @@ const loginUser = async (payload: { email: string; password: string }) => {
   const accessToken = createToken(
     jwtPayload,
     config.jwt_access_secret as string,
-    config.jwt_access_expires_in as string,
+    config.jwt_access_expires_in as number | string,
   );
   const refreshToken = createToken(
     jwtPayload,
     config.jwt_refresh_secret as string,
-    config.jwt_refresh_expires_in as string,
+    config.jwt_refresh_expires_in as string | number,
   );
 
 

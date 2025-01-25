@@ -6,7 +6,7 @@ import handleZodError from '../errors/handle-zod.error';
 import handleValidationError from '../errors/mongoose.validation.error';
 import handleCastError from '../errors/cast.error';
 import handleDuplicateError from '../errors/duplicate.error';
-import CustomError from '../errors/Custom.error';
+import { CustomError } from '../errors/custom.error';
 
 
 const globalErrorHandler: ErrorRequestHandler = (err: any, req, res, next) => {
