@@ -21,50 +21,19 @@ const createBike = catchAsync(async (req, res, next) => {
 });
 
 // get bikes =================================================================
-const getAllBike = async (req: Request, res: Response) => {
-  try {
-    const { searchTerm } = req.query;
-    let filter = {};
-    // check if any query in request object
-    if (searchTerm) {
-      filter = {
-        $or: [
-          { name: { $regex: searchTerm, $options: "i" } },
-          { brand: { $regex: searchTerm, $options: "i" } },
-          { category: { $regex: searchTerm, $options: "i" } },
-        ],
-      };
-    }
 
-    const result = await bikeServices.getAllBikesFromDB(filter);
+const getAllBike = catchAsync(async (req, res, next) => {
+  
+  const result = await bikeServices.getAllBikesFromDB(req?.query)
 
-    // Check for empty results
-    if (result.length === 0) {
-      const message = searchTerm
-        ? "No bikes match the search criteria. Please try refining your search."
-        : "No bikes found in the database.";
-      throw new CustomError(StatusCodes.BAD_REQUEST, message);
-    }
+  sendResponse(res, {
+    success: true,
+    message: "Bikes retrieved successfully",
+    statusCode: StatusCodes.OK,
+    data: result,
+  });
 
-    // response to the client
-
-    res.status(200).json({
-      message: "Bikes retrieved successfully",
-      status: true,
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(error.statusCode || 500).json({
-      message:
-        error instanceof CustomError
-          ? error.message
-          : "An unexpected error occurred",
-      success: false,
-      error,
-      stack: error.stack || "No stack trace available",
-    });
-  }
-};
+})
 
 // get specific bike by id =================================
 const getSingleBike = catchAsync(async (req, res, next) => {

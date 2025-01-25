@@ -25,28 +25,24 @@ class QueryBuilder<T> {
     return this;
   }
 
+
   filter() {
-    const queryObj = { ...this.query };
+    const queryObj: any = { ...this.query };
 
     //Filtering
-    const excludeFields = ["search", "sortBy", "sortOrder"];
-
+    const excludeFields = ["search", "sort", "limit", "page"];
     excludeFields.forEach((el) => delete queryObj[el]);
 
-    for (const key in queryObj) {
-      const value: any = queryObj[key];
-
-      if (mongoose.Types.ObjectId.isValid(value)) {
-        queryObj[key] = new mongoose.Types.ObjectId(value as string);
-      } else {
-        if (value == "true" || value === "false") {
-          queryObj[key] = value;
-        } else {
-          queryObj[key] = { $regex: queryObj[key], $options: "i" };
-        }
-      }
+    if (queryObj.price) {
+      const priceRange: any = {};
+      if (queryObj.price.gte) priceRange.$gte = Number(queryObj.price.gte);
+      if (queryObj.price.lte) priceRange.$lte = Number(queryObj.price.lte);
+      queryObj.price = priceRange;
     }
 
+    if (queryObj.inStock) {
+      queryObj.inStock = queryObj.availability === "true";
+    }
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
     return this;
   }
@@ -59,19 +55,13 @@ class QueryBuilder<T> {
     return this;
   }
 
-  sortOrder() {
-    const sortOrder = this.query?.sortOrder === 'asc' ? 1 : -1;
-    this.modelQuery = this.modelQuery.sort({createdAt: sortOrder});
+  paginate() {
+    const limit = Number(this?.query?.limit) || 10;
+    const page = Number(this?.query?.page) || 1;
+    const skip = (page - 1) * limit;
+    this.modelQuery = this.modelQuery.skip(skip).limit(limit);
     return this;
   }
-
-  //   paginate() {
-  //     const limit = Number(this?.query?.limit) || 10;
-  //     const page = Number(this?.query?.page) || 1;
-  //     const skip = (page - 1) * limit;
-  //     this.modelQuery = this.modelQuery.skip(skip).limit(limit);
-  //     return this;
-  //   }
 
   // field() {
   //   const fields = (this?.query?.fields as string)?.split(',')?.join(' ') || '';
@@ -79,11 +69,10 @@ class QueryBuilder<T> {
   //   return this;
   // }
 
-    excludeFields(excludeFields: string ) {
-      this.modelQuery = this.modelQuery.select(excludeFields);
-      return this;
-    }
-
+  excludeFields(excludeFields: string) {
+    this.modelQuery = this.modelQuery.select(excludeFields);
+    return this;
+  }
 }
 
 export default QueryBuilder;

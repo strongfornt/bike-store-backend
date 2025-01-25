@@ -1,17 +1,25 @@
-import { ObjectId } from "mongoose";
 import { Bike, IUpdatedBike } from "./bike.interface";
 import { BikeModel } from "./bike.model";
 import { CustomError } from "../../errors/custom.error";
 import { StatusCodes } from "http-status-codes";
+import QueryBuilder from "../../builder/Query.builder";
+import { BikeSearchAbleFields } from "./bike.constant";
 
 const createBikeIntoDB = async (bike: Bike) => {
   const response = await BikeModel.create(bike);
   return response;
 };
 
-const getAllBikesFromDB = async (filter: object) => {
-  const response = await BikeModel.find(filter);
-  return response;
+const getAllBikesFromDB = async (query: any) => {
+
+    const response = new QueryBuilder(BikeModel.find(), query)
+    .search(BikeSearchAbleFields)
+    .filter()
+    .sort()
+    .sortOrder()
+    .excludeFields("-createdAt -updatedAt");
+  const result = await response.modelQuery;
+  return result;
 };
 
 // get specific bike from db =================================================================
