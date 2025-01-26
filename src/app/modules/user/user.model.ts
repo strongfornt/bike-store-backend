@@ -40,6 +40,12 @@ const userSchema = new Schema<TUser, UserModelInterFace>(
   }
 );
 
+userSchema.statics.isUserExistsByEmail = async function (email: string) {
+  return await this.findOne({ email }).select('+password');
+};
+userSchema.statics.isUserExistsByUserId = async function (id: string) {
+  return await this.findById(id).select('+password');
+};
 userSchema.pre('save', async function (next) {
   const user = this;
   
@@ -51,12 +57,7 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
-userSchema.statics.isUserExistsByEmail = async function (email: string) {
-  return await this.findOne({ email }).select('+password');
-};
-userSchema.statics.isUserExistsByUserId = async function (id: string) {
-  return await this.findById(id).select('+password');
-};
+
 userSchema.post('save', function (doc, next) {
   
   doc.password = '';

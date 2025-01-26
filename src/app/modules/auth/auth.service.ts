@@ -54,7 +54,7 @@ const loginUser = async (payload: { email: string; password: string }) => {
 };
 
 const changePasswordIntoDB = async (payload: { email: string; password: string; newPassword: string }) => {
-  const isUserExists = await UserModel.isUserExistsByEmail(payload?.email);
+  const isUserExists = await UserModel.isUserExistsByEmail(payload?.email)
    //checking is user exist
    if (!isUserExists) {
     throw new CustomError(StatusCodes.NOT_FOUND, "This user is not found!");
@@ -76,12 +76,16 @@ const changePasswordIntoDB = async (payload: { email: string; password: string; 
     throw new CustomError(StatusCodes.BAD_REQUEST, "Invalid credentials");
   }
 
+  // update pass 
+   isUserExists.password = payload?.newPassword;
 
-  const response = await UserModel.findByIdAndUpdate(
-    isUserExists?._id,
-    { $set: { password: payload.newPassword } },
-    { new: true, runValidators: true }
-  )
+   const response = await isUserExists.save()
+
+  // const response = await UserModel.findByIdAndUpdate(
+  //   isUserExists?._id,
+  //   { $set: { password: payload.newPassword } },
+  //   { new: true, runValidators: true }
+  // )
 
 return response
 
