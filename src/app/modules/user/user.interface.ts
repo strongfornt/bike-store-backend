@@ -7,6 +7,7 @@ export interface TUser {
     email: string;
     password: string;
     role: "admin" | "customer";
+    isBlocked: boolean;
 }
 
 export interface UserModelInterFace extends Model<TUser> {

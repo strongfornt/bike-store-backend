@@ -8,6 +8,10 @@ router.post('/login',
     validationMiddleWare(AuthValidationSchema.loginValidationSchema),
     AuthController.loginUser
 )
+router.post('/change-password',
+    validationMiddleWare(AuthValidationSchema.changePassValidationSchema),
+    AuthController.loginUser
+)
 
 
 export const AuthRoutes = router

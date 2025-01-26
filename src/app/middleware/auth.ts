@@ -37,11 +37,11 @@ const authMiddleware = (...requiredRoles: TUserRole[]) => {
     }
 
     //checking if the user is blocked
-    // const isBlocked = isUserExists?.isBlocked;
+    const isBlocked = isUserExists?.isBlocked;
 
-    // if (isBlocked) {
-    //   throw new CustomError(StatusCodes.FORBIDDEN, "This user is Blocked!");
-    // }
+    if (isBlocked) {
+      throw new CustomError(StatusCodes.FORBIDDEN, "This user is Blocked!");
+    }
 
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new CustomError(
