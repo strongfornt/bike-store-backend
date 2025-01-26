@@ -8,7 +8,7 @@ router.post('/login',
     validationMiddleWare(AuthValidationSchema.loginValidationSchema),
     AuthController.loginUser
 )
-router.patch('/change-password',
+router.patch('/changePassword',
     validationMiddleWare(AuthValidationSchema.changePassValidationSchema),
     AuthController.changePassword
 )
