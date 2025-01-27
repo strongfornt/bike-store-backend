@@ -2,6 +2,9 @@ import express from "express";
 import { bikeController } from "./bike.controller";
 import { validationMiddleWare } from "../../middleware/validateRequest";
 import { BikeValidationZodSchema } from "./bike.zod.validation";
+import { multerUpload } from "../../config/multer.config";
+import { CustomError } from "../../errors/custom.error";
+import { StatusCodes } from "http-status-codes";
 
 const router = express.Router();
 
@@ -11,11 +14,19 @@ router
   .route("/")
   .get(bikeController.getAllBike)
   .post(
+    multerUpload.single("image"),
+    (req, res, next) => {
+      if(!req.file?.path){
+        throw new CustomError(StatusCodes.BAD_REQUEST, "Image  is required to create a bike")
+      } 
+      req.body = JSON.parse(req.body?.data);
+      next();
+    },
     validationMiddleWare(BikeValidationZodSchema.bikeZodValidationSchema),
     bikeController.createBike
   );
 
-// single element route ==
+// single element route ===
 router
   .route("/:productId")
   .get(bikeController.getSingleBike)

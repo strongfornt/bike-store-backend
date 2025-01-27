@@ -5,6 +5,7 @@ export interface Bike {
     category:'Mountain' | 'Road' | 'Hybrid' | 'Electric';
     description: string;
     quantity: number;
+    image: string;
     inStock: boolean;
 }
 

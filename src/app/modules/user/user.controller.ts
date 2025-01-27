@@ -1,8 +1,6 @@
 import catchAsync from "../../utils/catch-async";
 import sendResponse from "../../utils/sendResponse";
 import { UserService } from "./user.service";
-import { StatusCodes } from "http-status-codes";
-
 const registerUser = catchAsync(async (req, res, next) => {
   const { data } = req.body;
   const result = await UserService.registerUserIntoDB(data);

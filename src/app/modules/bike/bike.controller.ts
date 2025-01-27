@@ -6,7 +6,12 @@ import { bikeServices } from "./bike.service";
 // create bike =================================================================
 const createBike = catchAsync(async (req, res, next) => {
   const { data } = req.body;
-  const result = await bikeServices.createBikeIntoDB(data);
+  const payload = {
+    ...data,
+    image: req?.file?.path
+  }
+  
+  const result = await bikeServices.createBikeIntoDB(payload);
   sendResponse(res, {
     success: true,
     message: "Bike created successfully",

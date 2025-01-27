@@ -8,12 +8,17 @@ import router from './app/router';
 
 const app: Application = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 app.use(cors({origin: ['http://localhost:5173']}));
 
 
 app.get('/', async (req: Request, res: Response) => {
+ try {
   res.send("Hello! You're at the starting point of something awesome.");
+ } catch (error) {
+    res.send("Something went wrong")
+ }
 });
 
 //applications routes
