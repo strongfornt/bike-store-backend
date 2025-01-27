@@ -6,7 +6,9 @@ import QueryBuilder from "../../builder/Query.builder";
 import { BikeSearchAbleFields } from "./bike.constant";
 
 const createBikeIntoDB = async (bike: Bike) => {
-  const response = await BikeModel.create(bike);
+  const createdData = await BikeModel.create(bike);
+
+  const response = await BikeModel.findById(createdData?._id).select('-createdAt -updatedAt')
   return response;
 };
 
