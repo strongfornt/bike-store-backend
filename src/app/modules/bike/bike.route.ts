@@ -5,6 +5,7 @@ import { BikeValidationZodSchema } from "./bike.zod.validation";
 import { multerUpload } from "../../config/multer.config";
 import { CustomError } from "../../errors/custom.error";
 import { StatusCodes } from "http-status-codes";
+import authMiddleware from "../../middleware/auth";
 
 const router = express.Router();
 
@@ -14,6 +15,7 @@ router
   .route("/")
   .get(bikeController.getAllBike)
   .post(
+    // authMiddleware('customer'),
     multerUpload.single("image"),
     (req, res, next) => {
       if(!req.file?.path){

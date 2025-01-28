@@ -1,8 +1,7 @@
 import { z } from "zod";
 
 const loginValidationSchema = z.object({
-    data: z.object({
-      email: z
+  email: z
        .string({
           required_error: "Email is required",
         })
@@ -14,11 +13,9 @@ const loginValidationSchema = z.object({
           required_error: "Password is required",
         })
        .min(4, "Password must be at least 4 characters long"),
-    }).strict(),
-  })
+  }).strict()
 const changePassValidationSchema = z.object({
-    data: z.object({
-      email: z
+  email: z
        .string({
           required_error: "Email is required",
         })
@@ -35,19 +32,15 @@ const changePassValidationSchema = z.object({
           required_error: "Password is required",
         })
        .min(4, "Password must be at least 4 characters long"),
-    }).strict(),
-  })
-  const refreshTokenValidationSchema = z.object({
-    cookies: z.object({
-      refreshToken: z.string({
-        required_error: 'Refresh token is required!',
-      }),
-    }),
-  });
+  }).strict()
+  // const refreshTokenValidationSchema = z.object({
+  //   refreshToken: z.string({
+  //     required_error: 'Refresh token is required!',
+  //   }),
+  // }).strict();
   
 
 export const AuthValidationSchema = {
     loginValidationSchema,
-    changePassValidationSchema,
-    refreshTokenValidationSchema
+    changePassValidationSchema
 }  

@@ -4,12 +4,8 @@ import { NextFunction, Request, Response } from "express";
 
 export const validationMiddleWare = (schema: AnyZodObject) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { data } = req.body;
-
-    await schema.parseAsync({
-      data: data,
-      cookies: req.cookies,
-    });
+    // const { data } = req.body;
+    await schema.parseAsync(req?.body);
     next();
   });
 };

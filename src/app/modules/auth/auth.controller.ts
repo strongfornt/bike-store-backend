@@ -4,8 +4,8 @@ import sendResponse from "../../utils/sendResponse";
 import { AuthServices } from "./auth.service";
 
 const loginUser = catchAsync(async (req, res, next) => {
-  const { data } = req.body;
-  const result = await AuthServices.loginUser(data);
+  // const { data } = req.body;
+  const result = await AuthServices.loginUser(req?.body);
   const { refreshToken, accessToken } = result;
 
   res.cookie("refreshToken", refreshToken, {
@@ -26,8 +26,8 @@ const loginUser = catchAsync(async (req, res, next) => {
 });
 
 const changePassword = catchAsync(async (req, res, next) => {
-  const { data } = req.body;
-await AuthServices.changePasswordIntoDB(data);
+  // const { data } = req.body;
+await AuthServices.changePasswordIntoDB(req?.body);
   sendResponse(res, {
     success: true,
     message: "Password changed successfully",

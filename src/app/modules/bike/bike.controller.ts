@@ -5,9 +5,9 @@ import { bikeServices } from "./bike.service";
 
 // create bike =================================================================
 const createBike = catchAsync(async (req, res, next) => {
-  const { data } = req.body;
+  // const { data } = req.body;
   const payload = {
-    ...data,
+    ...req?.body,
     image: req?.file?.path
   }
   
@@ -48,9 +48,9 @@ const getSingleBike = catchAsync(async (req, res, next) => {
 // update bike by id ============================================================
 const updateSingleBike = catchAsync(async (req, res, next) => {
     const {productId} = req.params;
-    const {data} = req.body;
+    // const {data} = req.body;
 
-    const result = await bikeServices.updateSingleBikeIntoDB(productId, data)
+    const result = await bikeServices.updateSingleBikeIntoDB(productId, req?.body)
 
     sendResponse(res, {
       success: true,

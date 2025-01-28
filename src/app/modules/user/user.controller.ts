@@ -2,8 +2,8 @@ import catchAsync from "../../utils/catch-async";
 import sendResponse from "../../utils/sendResponse";
 import { UserService } from "./user.service";
 const registerUser = catchAsync(async (req, res, next) => {
-  const { data } = req.body;
-  const result = await UserService.registerUserIntoDB(data);
+  // const { data } = req.body;
+  const result = await UserService.registerUserIntoDB(req?.body);
   const { _id, name, email } = result;
   sendResponse(res, {
     success: true,

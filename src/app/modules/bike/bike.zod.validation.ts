@@ -1,7 +1,6 @@
 import { z } from "zod";
 
  const bikeZodValidationSchema = z.object({
- data: z.object({
   name: z.string({required_error:"Name is required"}),
   brand: z.string({required_error:"Brand is required"}),
   price: z.number().min(0, "Price must be a positive number"),
@@ -10,11 +9,9 @@ import { z } from "zod";
   description: z.string({required_error:'Description is required'}),
   quantity: z.number().int().min(0).default(1),
   inStock: z.boolean().default(true),
- }).strict()
-});
+}).strict();
 
  const bikeUpdateZodValidationSchema = z.object({
- data: z.object({
   name: z.string({required_error:"Name is required"}).optional(),
   brand: z.string({required_error:"Brand is required"}).optional(),
   price: z.number().min(0, "Price must be a positive number").optional(),
@@ -22,8 +19,7 @@ import { z } from "zod";
   description: z.string({required_error:'Description is required'}).optional(),
   quantity: z.number().int().min(0).optional(),
   inStock: z.boolean().optional(),
- }).strict()
-})
+}).strict()
 
 export const BikeValidationZodSchema = {
   bikeZodValidationSchema,
