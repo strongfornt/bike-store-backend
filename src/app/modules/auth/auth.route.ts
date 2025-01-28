@@ -8,9 +8,14 @@ router.post('/login',
     validationMiddleWare(AuthValidationSchema.loginValidationSchema),
     AuthController.loginUser
 )
-router.patch('/changePassword',
+router.patch('/change-password',
     validationMiddleWare(AuthValidationSchema.changePassValidationSchema),
     AuthController.changePassword
+)
+
+router.post('/refresh-token',
+    validationMiddleWare(AuthValidationSchema.refreshTokenValidationSchema),
+    AuthController.refreshToken
 )
 
 

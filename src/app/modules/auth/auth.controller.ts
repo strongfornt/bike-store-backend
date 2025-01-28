@@ -36,8 +36,22 @@ await AuthServices.changePasswordIntoDB(data);
   });
 })
 
+const refreshToken = catchAsync(async (req, res, next) => {
+  const {refreshToken} = req.cookies;
+
+  const result = await AuthServices.refreshToken(refreshToken)
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Access token is retrieved successfully!',
+    data: result,
+  });
+
+})
+
 
 export const AuthController = {
   loginUser,
-  changePassword
+  changePassword,
+  refreshToken
 };

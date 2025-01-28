@@ -2,7 +2,7 @@ import { z } from "zod";
 
 const orderZodValidationSchema = z.object({
   data: z.object({
-    email: z.string().email("Invalid email address"),
+    // email: z.string().email("Invalid email address"),
     product: z.string({ required_error: "Product name is required" }),
     quantity: z
       .number()

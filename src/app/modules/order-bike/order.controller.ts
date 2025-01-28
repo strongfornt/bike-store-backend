@@ -2,11 +2,20 @@ import { orderServices } from "./order.service";
 import catchAsync from "../../utils/catch-async";
 import sendResponse from "../../utils/sendResponse";
 import { StatusCodes } from "http-status-codes";
+import { IOrderDetails } from "./order.interface";
 
 // create order =================================================================
 const createOrder = catchAsync(async (req, res, next) => {
   const { data } = req.body;
-  const result = await orderServices.createOrderIntoDB(data);
+  const user = req?.user
+  const payload = {
+    data: {
+      ...data,
+      email: user!.email
+    },
+    user
+  }
+  const result = await orderServices.createOrderIntoDB(payload as IOrderDetails);
   sendResponse(res, {
     success: true,
     message: "Order created successfully",

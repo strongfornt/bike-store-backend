@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import { UserModel } from "../user/user.model";
 import { CustomError } from "../../errors/custom.error";
 import config from "../../config";
-import { createToken } from "./auth.utils";
+import { createToken, verifyToken } from "./auth.utils";
 
 const loginUser = async (payload: { email: string; password: string }) => {
   const isUserExists = await UserModel.isUserExistsByEmail(payload?.email);
@@ -31,6 +31,8 @@ const loginUser = async (payload: { email: string; password: string }) => {
   //create token and send to the client
   const jwtPayload = {
     userId: isUserExists?._id,
+    email: isUserExists?.email,
+    name: isUserExists?.name,
     role: isUserExists?.role,
   };
 
@@ -91,8 +93,42 @@ return response
 
 }
 
+const refreshToken = async (token: string) => {
+  const decoded = verifyToken(token, config.jwt_refresh_secret as string)
+
+  const { userId, iat } = decoded;
+
+  const isUserExists = await UserModel.isUserExistsByUserId(userId);
+
+  if(!isUserExists) {
+    throw new CustomError(StatusCodes.NOT_FOUND, "User not found");
+  }
+
+  if(isUserExists?.isBlocked){
+    throw new CustomError(StatusCodes.FORBIDDEN, "This user is Blocked!");
+  }
+
+  const jwtPayload = {
+    userId: isUserExists?._id, 
+    name: isUserExists?.name, 
+    email: isUserExists?.email,
+    role: isUserExists?.role,
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as number | string,
+  );
+
+  return {
+    accessToken
+  }
+}
+
 
 export const AuthServices = {
   loginUser,
   changePasswordIntoDB,
+  refreshToken
 };

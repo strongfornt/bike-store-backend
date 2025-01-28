@@ -37,9 +37,17 @@ const changePassValidationSchema = z.object({
        .min(4, "Password must be at least 4 characters long"),
     }).strict(),
   })
+  const refreshTokenValidationSchema = z.object({
+    cookies: z.object({
+      refreshToken: z.string({
+        required_error: 'Refresh token is required!',
+      }),
+    }),
+  });
   
 
 export const AuthValidationSchema = {
     loginValidationSchema,
-    changePassValidationSchema
+    changePassValidationSchema,
+    refreshTokenValidationSchema
 }  

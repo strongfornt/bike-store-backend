@@ -7,14 +7,14 @@ import { BikeSearchAbleFields } from "./bike.constant";
 
 const createBikeIntoDB = async (bike: Bike) => {
   const createdData = await BikeModel.create(bike);
-
-  const response = await BikeModel.findById(createdData?._id).select('-createdAt -updatedAt')
+  const response = await BikeModel.findById(createdData?._id).select(
+    "-createdAt -updatedAt"
+  );
   return response;
 };
 
 const getAllBikesFromDB = async (query: any) => {
-
-    const response = new QueryBuilder(BikeModel.find(), query)
+  const response = new QueryBuilder(BikeModel.find(), query)
     .search(BikeSearchAbleFields)
     .filter()
     .sort()
