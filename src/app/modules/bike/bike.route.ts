@@ -6,6 +6,7 @@ import { multerUpload } from "../../config/multer.config";
 import { CustomError } from "../../errors/custom.error";
 import { StatusCodes } from "http-status-codes";
 import authMiddleware from "../../middleware/auth";
+import { User_Role } from "../user/user.constant";
 
 const router = express.Router();
 
@@ -16,6 +17,7 @@ router
   .get(bikeController.getAllBike)
   .post(
     // authMiddleware('customer'),
+    authMiddleware(User_Role.admin),
     multerUpload.single("image"),
     (req, res, next) => {
       if(!req.file?.path){
@@ -33,6 +35,7 @@ router
   .route("/:productId")
   .get(bikeController.getSingleBike)
   .patch(
+    authMiddleware(User_Role.admin),
     multerUpload.single("image"),
     (req, res, next) => {
       // if(!req.file?.path){
