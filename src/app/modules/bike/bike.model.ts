@@ -4,7 +4,12 @@ import { Bike } from "./bike.interface";
 const bikeSchema = new Schema<Bike>(
   {
     name: { type: String, required: true },
-    brand: { type: String, required: true },
+    // brand: { type: String, required: true },
+    brand: {
+      type:String,
+      enum: ["Yamaha", "Suzuki", "Honda", "Bajaj", "Hero", "TVS"],
+      required: true
+    },
     price: { type: Number, required: true,min: 0},
     category: {
       type: String,

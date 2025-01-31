@@ -1,6 +1,6 @@
 export interface Bike {
     name: string;
-    brand: string;
+    brand: "Yamaha" | "Suzuki" | "Honda" | "Bajaj" | "Hero" |"TVS";
     price: number;
     category:'Mountain' | 'Road' | 'Hybrid' | 'Electric';
     description: string;

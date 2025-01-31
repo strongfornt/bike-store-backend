@@ -33,6 +33,14 @@ router
   .route("/:productId")
   .get(bikeController.getSingleBike)
   .patch(
+    multerUpload.single("image"),
+    (req, res, next) => {
+      // if(!req.file?.path){
+      //   throw new CustomError(StatusCodes.BAD_REQUEST, "Image  is required to create a bike")
+      // } 
+      req.body = JSON.parse(req.body?.data);
+      next();
+    },
     validationMiddleWare(BikeValidationZodSchema.bikeUpdateZodValidationSchema),
     bikeController.updateSingleBike
   )

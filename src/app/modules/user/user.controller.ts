@@ -19,6 +19,9 @@ const registerUser = catchAsync(async (req, res, next) => {
 
 
 
+
+
 export const UserController = {
   registerUser,
+
 };
