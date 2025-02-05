@@ -1,49 +1,128 @@
+import { StatusCodes } from "http-status-codes";
+import mongoose from "mongoose";
 import { CustomError } from "../../errors/custom.error";
 import { BikeModel } from "../bike/bike.model";
-import { Order, IOrderDetails } from "./order.interface";
+import { IOrderDetails } from "./order.interface";
 import { OrderModel } from "./order.model";
+import { orderUtils } from "./order.util";
 
 const createOrderIntoDB = async (order: IOrderDetails) => {
   const { data, user } = order;
-  const {product, quantity, totalPrice} = data
-  const bikeData = await BikeModel.findById(product);
 
-  if (!bikeData) {
-    throw new CustomError(404,"Product not found" );
+  const session = await mongoose.startSession();
+
+  try {
+    let totalPrice = 0;
+    const productDetails = (
+      await Promise.all(
+        data?.map(async (item) => {
+          const product = await BikeModel.findById(item.id);
+          // console.log(product);
+
+          if (!product) return null;
+          if (product.quantity < item?.quantity) {
+            return null;
+          }
+          product.quantity -= item?.quantity;
+
+          if (product.quantity === 0) {
+            product.inStock = false;
+          }
+          await product.save();
+          const subtotal = product.price * item.quantity;
+          totalPrice += subtotal;
+          return {
+            productId: item.id,
+            name: product.name,
+            price: product.price,
+            quantity: item.quantity,
+            subtotal,
+          };
+        })
+      )
+    ).filter(Boolean);
+
+    if (!productDetails.length) {
+      throw new CustomError(StatusCodes.BAD_REQUEST, "No products selected");
+    }
+
+    const orderData = {
+      email: user?.email,
+      products: productDetails,
+      totalPrice,
+    };
+
+    let response: any = await OrderModel.create(orderData);
+
+    const shurjopayPayload = {
+      amount: totalPrice,
+      order_id: response._id,
+      currency: "BDT",
+      customer_name: user.name,
+      customer_address: "N/A",
+      customer_email: user.email,
+      customer_phone: "N/A",
+      customer_city: "N/A",
+      client_ip: "127.0.0.1",
+    };
+    const payment = await orderUtils.makePaymentAsync(shurjopayPayload);
+
+    if (payment?.transactionStatus) {
+      await OrderModel.findByIdAndUpdate(response?._id, {
+        $set: {
+          "transaction.id": payment.sp_order_id,
+          "transaction.transactionStatus": payment.transactionStatus,
+        },
+      });
+    }
+
+    // await session.commitTransaction();
+    // await session.endSession();
+    return payment.checkout_url;
+  } catch (error) {
+    // await session.abortTransaction();
+    // await session.endSession();
+    throw new CustomError(StatusCodes.BAD_REQUEST, "Failed to created order");
+  }
+};
+
+//verify order
+const verifyPayment = async (orderID: string) => {
+  const verifiedPayment = await orderUtils.verifyPaymentAsync(orderID);
+
+  if (verifiedPayment.length) {
+    await OrderModel.findOneAndUpdate(
+      { "transaction.id": orderID },
+      {
+        $set: {
+          "transaction.bank_status": verifiedPayment[0].bank_status,
+          "transaction.sp_code": verifiedPayment[0].sp_code,
+          "transaction.sp_message": verifiedPayment[0].sp_message,
+          "transaction.transactionStatus":
+            verifiedPayment[0].transaction_status,
+          "transaction.method": verifiedPayment[0].method,
+          "transaction.date_time": verifiedPayment[0].date_time,
+          status:
+            verifiedPayment[0].bank_status === "Success"
+              ? "Paid"
+              : verifiedPayment[0].bank_status === "Failed"
+              ? "Pending"
+              : verifiedPayment[0].bank_status === "Cancel"
+              ? "Cancelled"
+              : "",
+        },
+      },
+      { new: true }
+    );
   }
 
-  // Check if the stock is sufficient
-  if (bikeData.quantity < quantity) {
-    throw new CustomError( 400,"Insufficient stock");
-  }
+  return verifiedPayment;
+};
 
-  // Step 2: Reduce the quantity
-  bikeData.quantity -= quantity;
-
-  // If quantity reaches 0, set inStock to false
-  if (bikeData.quantity === 0) {
-    bikeData.inStock = false;
-  }
-
-  // Save the updated  document
-  await bikeData.save();
-
-  // Step 3: Create the order and insert into the Order collection
-  const response = await OrderModel.create(order?.data);
-
-  // const shurjopayPayload = {
-  //   amount: totalPrice,
-  //   order_id: response._id,
-  //   currency: "BDT",
-  //   customer_name: user.name,
-  //   customer_address: 'N/A',
-  //   customer_email: user.email,
-  //   customer_phone: 'N/A',
-  //   customer_city: 'N/A',
-  //   // client_ip,
-  // };
-
-  return response;
+//get all order
+const getOrdersFromDB = async (email: string) => {
+  const orders = await OrderModel.find({ email }).sort({ createdAt: -1 });
+  return orders;
 };
 
 // Calculate Revenue from Orders
@@ -65,4 +144,6 @@ const calculateRevenueIntoDB = async () => {
 export const orderServices = {
   createOrderIntoDB,
   calculateRevenueIntoDB,
+  verifyPayment,
+  getOrdersFromDB,
 };

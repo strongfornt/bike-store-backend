@@ -9,10 +9,7 @@ const createOrder = catchAsync(async (req, res, next) => {
   // const { data } = req.body;
   const user = req?.user;
   const payload = {
-    data: {
-      ...req?.body,
-      email: user!.email,
-    },
+    data: req.body,
     user,
   };
   const result = await orderServices.createOrderIntoDB(
@@ -24,6 +21,33 @@ const createOrder = catchAsync(async (req, res, next) => {
     statusCode: StatusCodes.OK,
     data: result,
   });
+});
+
+const verifyPayment = catchAsync(async (req, res) => {
+  const {orderID} = req.params;
+  const order = await orderServices.verifyPayment(orderID as string);
+  sendResponse(res, {
+    success: true,
+    message: "Order verified successfully",
+    statusCode: StatusCodes.OK,
+    data: order,
+  });
+ 
+});
+
+//get users order
+const getOrders = catchAsync(async (req, res) => {
+  const user = req?.user;
+  const {email} = user!.email;
+  const order = await orderServices.getOrdersFromDB(email);
+
+  sendResponse(res, {
+    success: true,
+    message: "Order retrieved successfully",
+    statusCode: StatusCodes.OK,
+    data: order,
+  });
+ 
 });
 
 // calculate orders revenue
@@ -42,4 +66,6 @@ const calculateTotalRevenue = catchAsync(async (req, res, next) => {
 export const orderController = {
   createOrder,
   calculateTotalRevenue,
+  verifyPayment,
+  getOrders
 };

@@ -1,14 +1,27 @@
 import { JwtPayload } from "jsonwebtoken";
 
 export interface Order {
-    email: string;
-    product: string;
-    quantity: number;
-    totalPrice: number;
+  email: string;
+  products: [{
+    productId: string, 
+    name: string,
+    price: number,
+    quantity:number,
+    subtotal: number, 
+  }];
+  quantity: number;
+  totalPrice: number;
+  transaction: {
+    id: string;
+    transactionStatus: string;
+  };
 }
 
-
 export interface IOrderDetails {
-    data: Order;
-    user: JwtPayload
+  data: {
+    id: string;
+    quantity: number;
+    // email: string ;
+  }[];
+  user: JwtPayload;
 }
