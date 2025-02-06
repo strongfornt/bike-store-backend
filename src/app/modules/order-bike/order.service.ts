@@ -45,11 +45,21 @@ const createOrderIntoDB = async (order: IOrderDetails) => {
     if (!productDetails.length) {
       throw new CustomError(StatusCodes.BAD_REQUEST, "No products selected");
     }
+    const today = new Date();
+    const estimatedDeliveryDate = new Date();
+    estimatedDeliveryDate.setDate(today.getDate() + 3);
+
+    const formattedDate = `${
+      estimatedDeliveryDate.getMonth() + 1
+    }/${estimatedDeliveryDate.getDate()}/${estimatedDeliveryDate.getFullYear()}`;
+    
 
     const orderData = {
       email: user?.email,
       products: productDetails,
       totalPrice,
+      orderStatus: "Pending",
+      estimate_delivery_date: formattedDate,
     };
 
     let response: any = await OrderModel.create(orderData);
@@ -121,7 +131,11 @@ const verifyPayment = async (orderID: string) => {
 
 //get all order
 const getOrdersFromDB = async (email: string) => {
-  const orders = await OrderModel.find({ email }).sort({ createdAt: -1 });
+  const orders = await OrderModel.find({ email })
+    .sort({ createdAt: -1 })
+    .select("-createdAt -updatedAt");
+  console.log(orders);
+
   return orders;
 };
 

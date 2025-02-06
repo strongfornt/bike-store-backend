@@ -24,8 +24,7 @@ const createOrder = catchAsync(async (req, res, next) => {
 });
 
 const verifyPayment = catchAsync(async (req, res) => {
-  const {orderID} = req.params;
-  const order = await orderServices.verifyPayment(orderID as string);
+  const order = await orderServices.verifyPayment(req.query.order_id  as string);
   sendResponse(res, {
     success: true,
     message: "Order verified successfully",
@@ -37,9 +36,13 @@ const verifyPayment = catchAsync(async (req, res) => {
 
 //get users order
 const getOrders = catchAsync(async (req, res) => {
-  const user = req?.user;
-  const {email} = user!.email;
-  const order = await orderServices.getOrdersFromDB(email);
+  const userEmail = req?.user?.email;
+  console.log(userEmail);
+  
+  // const {email} = user!.email;
+  // console.log(email);
+  
+  const order = await orderServices.getOrdersFromDB(userEmail);
 
   sendResponse(res, {
     success: true,

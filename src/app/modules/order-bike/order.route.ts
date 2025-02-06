@@ -21,7 +21,7 @@ router
   ;
 
 router.patch(
-  "/verify-order/:orderID",
+  "/verify-order",
   authMiddleware(User_Role.customer, User_Role.admin),
   orderController.verifyPayment
 );

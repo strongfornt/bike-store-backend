@@ -15,6 +15,8 @@ export interface Order {
     id: string;
     transactionStatus: string;
   };
+  orderStatus:'Pending' | 'Processing' | 'Shipped' | 'Delivered';
+  estimate_delivery_date: string
 }
 
 export interface IOrderDetails {

@@ -26,6 +26,12 @@ const orderModel = new Schema<Order>(
       method: String,
       date_time: String,
     },
+    orderStatus: {
+      type: String,
+      enum: ['Processing', 'Pending', 'Delivered', 'Shipped'],
+      required: true
+    },
+    estimate_delivery_date: { type: String, required: true}
   },
   { versionKey: false, timestamps: true }
 );
