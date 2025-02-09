@@ -1,3 +1,4 @@
+
 export interface Bike {
     name: string;
     brand: "Yamaha" | "Suzuki" | "Honda" | "Bajaj" | "Hero" |"TVS";
@@ -7,7 +8,7 @@ export interface Bike {
     quantity: number;
     image: string;
     inStock: boolean;
-}
+} 
 
 
 export interface IUpdatedBike extends Partial<Bike> {}

@@ -1,4 +1,5 @@
 import { JwtPayload } from "jsonwebtoken";
+import { Document } from "mongoose";
 
 export interface Order {
   email: string;
@@ -16,7 +17,9 @@ export interface Order {
     transactionStatus: string;
   };
   orderStatus:'Pending' | 'Processing' | 'Shipped' | 'Delivered';
-  estimate_delivery_date: string
+  estimate_delivery_date: string;
+  createdAt: Date;  
+  updatedAt: Date; 
 }
 
 export interface IOrderDetails {

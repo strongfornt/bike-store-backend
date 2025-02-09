@@ -76,8 +76,42 @@ const updateOrderStatusIntoDB = async (payload: {
   return response;
 };
 
+const addEstimateDeliveryDateIntoDB = async (payload: {
+  orderId: string;
+  estimate_delivery_date: string;
+}) => {
+  const { orderId, estimate_delivery_date } = payload;
+  const isOrderExist = await OrderModel.findById(orderId);
+  if (!isOrderExist) {
+    throw new CustomError(StatusCodes.NOT_FOUND, "Order not found!");
+  }
+
+  const createdDate = new Date(isOrderExist?.createdAt);
+  const createdMonth = String(createdDate.getMonth()).padStart(2, "0");
+  const createdDay = String(createdDate.getDate()).padStart(2, "0");
+  const createdTime = `${createdMonth}/${createdDay}/${createdDate.getFullYear()} `;
+
+  if (estimate_delivery_date < createdTime) {
+    throw new CustomError(
+      StatusCodes.BAD_REQUEST,
+      "Estimate delivery date should be later than order creation date."
+    );
+  }
+
+  const response = await OrderModel.findByIdAndUpdate(
+    orderId,
+    {
+      $set: { estimate_delivery_date },
+    },
+    { new: true, runValidators: true }
+  ).select("-createdAt -updatedAt");
+
+  return response;
+};
+
 export const AdminService = {
   getAllUsersFromDB,
   updateUserStatusIntoDB,
   updateOrderStatusIntoDB,
+  addEstimateDeliveryDateIntoDB,
 };

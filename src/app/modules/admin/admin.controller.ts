@@ -57,9 +57,28 @@ const updateOrderStatus = catchAsync ( async (req, res, next) => {
 
 })
 
+const addEstimateDeliveryDateIntoOrder = catchAsync( async (req, res, next) => {
+  const { orderId } = req.params;
+  const payload = {
+    orderId,
+    ...req.body,
+  }
+
+  const result = await AdminService.addEstimateDeliveryDateIntoDB(payload)
+
+  sendResponse(res, {
+    success: true,
+    message: 'Added Estimate delivery date successfully',
+    statusCode: StatusCodes.OK,
+    data: result,
+  });
+
+})
+
 
 export const AdminController = {
   getAllUser,
   updateUserStatus,
   updateOrderStatus,
+  addEstimateDeliveryDateIntoOrder
 };
