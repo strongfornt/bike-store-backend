@@ -34,7 +34,24 @@ const updateUserStatus = catchAsync(async (req, res, next) => {
   });
 });
 
+
+
+const updateOrderStatus = catchAsync ( async (req, res, next) => {
+  const { orderId } = req.params;
+  
+  const payload = {
+    ...req.body,
+    orderId
+  }
+
+  // const result = await AdminService.updateOrderStatusIntoDB(payload)
+
+
+})
+
+
 export const AdminController = {
   getAllUser,
   updateUserStatus,
+  updateOrderStatus,
 };
