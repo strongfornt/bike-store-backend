@@ -28,20 +28,23 @@ class QueryBuilder<T> {
 
   filter() {
     const queryObj: any = { ...this.query };
-
+    
     //Filtering
     const excludeFields = ["search", "sort", "limit", "page"];
     excludeFields.forEach((el) => delete queryObj[el]);
 
-    if (queryObj.price) {
+    if (queryObj.minPrice || queryObj.maxPrice) {
       const priceRange: any = {};
-      if (queryObj.price.gte) priceRange.$gte = Number(queryObj.price.gte);
-      if (queryObj.price.lte) priceRange.$lte = Number(queryObj.price.lte);
+      if (queryObj.minPrice) priceRange.$gte = Number(queryObj.minPrice);
+      if (queryObj.maxPrice) priceRange.$lte = Number(queryObj.maxPrice);
       queryObj.price = priceRange;
+      delete queryObj.minPrice;
+      delete queryObj.maxPrice;
     }
+    
 
-    if (queryObj.inStock) {
-      queryObj.inStock = queryObj.availability === "true";
+    if (queryObj.inStock !== undefined) {
+      queryObj.inStock = queryObj.inStock === "true";
     }
     this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
     return this;

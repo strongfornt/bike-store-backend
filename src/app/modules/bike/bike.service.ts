@@ -51,6 +51,11 @@ const updateSingleBikeIntoDB = async (
     { new: true, runValidators: true }
   );
 
+  if( response?.inStock === false && response?.quantity > 0) {
+    response.inStock = true;
+    await response.save();
+  }
+
   return response;
 };
 
