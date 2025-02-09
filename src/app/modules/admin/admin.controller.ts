@@ -44,8 +44,16 @@ const updateOrderStatus = catchAsync ( async (req, res, next) => {
     orderId
   }
 
-  // const result = await AdminService.updateOrderStatusIntoDB(payload)
+  // console.log(payload);
+  
+  const result = await AdminService.updateOrderStatusIntoDB(payload)
 
+  sendResponse(res, {
+    success: true,
+    message: 'Order status updated successfully',
+    statusCode: StatusCodes.OK,
+    data: result,
+  });
 
 })
 

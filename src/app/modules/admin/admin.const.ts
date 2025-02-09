@@ -1,0 +1,1 @@
+export const validOrderStatuses = ['Pending', 'Processing', 'Shipped', 'Delivered'];

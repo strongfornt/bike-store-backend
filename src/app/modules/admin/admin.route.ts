@@ -20,7 +20,7 @@ router.patch('/update-user-status/:userId',
 )
 
 router.patch('/update-order-status/:orderId',
-  authMiddleware(User_Role.admin),
+  // authMiddleware(User_Role.admin),
   validationMiddleWare(adminValidationSchema.updateOrderStatusValidationSchema),
   AdminController.updateOrderStatus
 )
