@@ -7,8 +7,12 @@ const userActiveZodValidationSchema = z.object({
 const updateOrderStatusValidationSchema = z.object({
     orderStatus: z.enum(['Pending', 'Processing', 'Shipped', 'Delivered'])
 })
+const updateOrderEstimateDeliveryDateValidationSchema = z.object({
+    estimate_delivery_date: z.string({required_error: "Order estimate date required"})
+})
 
 export const adminValidationSchema = {
     userActiveZodValidationSchema,
-    updateOrderStatusValidationSchema
+    updateOrderStatusValidationSchema,
+    updateOrderEstimateDeliveryDateValidationSchema
 }

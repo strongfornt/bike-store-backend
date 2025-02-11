@@ -24,6 +24,11 @@ router.patch('/update-order-status/:orderId',
   validationMiddleWare(adminValidationSchema.updateOrderStatusValidationSchema),
   AdminController.updateOrderStatus
 )
+router.patch('/update-order-estimate-delivery-date/:orderId',
+  authMiddleware(User_Role.admin),
+  validationMiddleWare(adminValidationSchema.updateOrderEstimateDeliveryDateValidationSchema),
+  AdminController.addEstimateDeliveryDateIntoOrder
+)
 
 
 

@@ -15,10 +15,15 @@ router
     orderController.createOrder
   )
   .get(
-    authMiddleware(User_Role.customer, User_Role.admin),
-    orderController.getOrders
+    authMiddleware(User_Role.customer),
+    orderController.getSpecificOrder
   )
   ;
+
+  router.route('/get-all-orders')
+          .get(authMiddleware(User_Role.admin),
+          orderController.getAllOrders
+        )
 
 router.patch(
   "/verify-order",

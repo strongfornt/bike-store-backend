@@ -31,7 +31,7 @@ const orderModel = new Schema<Order>(
       enum: ['Processing', 'Pending', 'Delivered', 'Shipped'],
       required: true
     },
-    estimate_delivery_date: { type: String, required: true}
+    estimate_delivery_date: { type: String }
   },
   { versionKey: false, timestamps: true }
 );

@@ -52,8 +52,13 @@ const updateOrderStatusIntoDB = async (payload: {
 
   const currentStatus = isOrderExist?.orderStatus;
 
+  if(isOrderExist?.orderStatus === 'Delivered' && orderStatus === 'Delivered'){
+    throw new CustomError(StatusCodes.BAD_REQUEST, "Cannot update delivered order status!");
+  }
+
   const currentStatusIndex = validOrderStatuses.indexOf(currentStatus);
   const newStatusIndex = validOrderStatuses.indexOf(orderStatus);
+
 
   // Ensure the new status is the next one in sequence
   if (newStatusIndex !== currentStatusIndex + 1) {
@@ -89,7 +94,7 @@ const addEstimateDeliveryDateIntoDB = async (payload: {
   const createdDate = new Date(isOrderExist?.createdAt);
   const createdMonth = String(createdDate.getMonth()).padStart(2, "0");
   const createdDay = String(createdDate.getDate()).padStart(2, "0");
-  const createdTime = `${createdMonth}/${createdDay}/${createdDate.getFullYear()} `;
+  const createdTime = `${createdMonth}-${createdDay}-${createdDate.getFullYear()} `;
 
   if (estimate_delivery_date < createdTime) {
     throw new CustomError(

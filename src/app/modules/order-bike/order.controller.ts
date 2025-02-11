@@ -35,7 +35,7 @@ const verifyPayment = catchAsync(async (req, res) => {
 });
 
 //get users order
-const getOrders = catchAsync(async (req, res) => {
+const getSpecificOrder = catchAsync(async (req, res) => {
   const userEmail = req?.user?.email;
   console.log(userEmail);
   
@@ -47,6 +47,20 @@ const getOrders = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     message: "Order retrieved successfully",
+    statusCode: StatusCodes.OK,
+    data: order,
+  });
+ 
+});
+
+const getAllOrders = catchAsync(async (req, res) => {
+
+  
+  const order = await orderServices.getAllOrdersFromDB();
+
+  sendResponse(res, {
+    success: true,
+    message: "Orders retrieved successfully",
     statusCode: StatusCodes.OK,
     data: order,
   });
@@ -66,9 +80,11 @@ const calculateTotalRevenue = catchAsync(async (req, res, next) => {
   });
 });
 
+
 export const orderController = {
   createOrder,
   calculateTotalRevenue,
   verifyPayment,
-  getOrders
+  getSpecificOrder,
+  getAllOrders
 };
