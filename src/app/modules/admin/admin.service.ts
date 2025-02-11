@@ -96,7 +96,13 @@ const addEstimateDeliveryDateIntoDB = async (payload: {
   const createdDay = String(createdDate.getDate()).padStart(2, "0");
   const createdTime = `${createdMonth}-${createdDay}-${createdDate.getFullYear()} `;
 
-  if (estimate_delivery_date < createdTime) {
+  const deliveryDate = estimate_delivery_date.split("-")
+  const [month, day, year] = deliveryDate;
+  const deliveryMonth = month.padStart(2,"0")
+  const deliveryDay = day.padStart(2,"0")
+  const deliveryTime = `${deliveryMonth}-${deliveryDay}-${year}`
+  
+  if (deliveryTime < createdTime) {
     throw new CustomError(
       StatusCodes.BAD_REQUEST,
       "Estimate delivery date should be later than order creation date."
