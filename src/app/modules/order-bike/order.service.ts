@@ -5,6 +5,7 @@ import { BikeModel } from "../bike/bike.model";
 import { IOrderDetails } from "./order.interface";
 import { OrderModel } from "./order.model";
 import { orderUtils } from "./order.util";
+import QueryBuilder from "../../builder/Query.builder";
 
 const createOrderIntoDB = async (order: IOrderDetails) => {
   const { data, user } = order;
@@ -129,13 +130,13 @@ const getOrdersFromDB = async (email: string) => {
 
   return orders;
 };
-const getAllOrdersFromDB = async () => {
-  const orders = await OrderModel.find()
-    .sort({ createdAt: -1 })
-    .select("-updatedAt");
+const getAllOrdersFromDB = async (query:any) => {
+  const orders = new QueryBuilder(OrderModel.find(),query).sort().paginate().excludeFields('-updatedAt')
+  
+const response = await orders.modelQuery
   
 
-  return orders;
+  return response;
 };
 
 // Calculate Revenue from Orders

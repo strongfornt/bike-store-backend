@@ -55,8 +55,9 @@ const getSpecificOrder = catchAsync(async (req, res) => {
 
 const getAllOrders = catchAsync(async (req, res) => {
 
+  const query = req.query
   
-  const order = await orderServices.getAllOrdersFromDB();
+  const order = await orderServices.getAllOrdersFromDB(query);
 
   sendResponse(res, {
     success: true,

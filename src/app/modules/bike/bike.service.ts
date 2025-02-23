@@ -18,6 +18,7 @@ const getAllBikesFromDB = async (query: any) => {
     .search(BikeSearchAbleFields)
     .filter()
     .sort()
+    .paginate()
     .excludeFields("-createdAt -updatedAt");
   const result = await response.modelQuery;
   return result;

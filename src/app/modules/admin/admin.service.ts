@@ -102,6 +102,8 @@ const addEstimateDeliveryDateIntoDB = async (payload: {
   const deliveryDay = day.padStart(2,"0")
   const deliveryTime = `${deliveryMonth}-${deliveryDay}-${year}`
   
+  console.log(createdTime, deliveryTime);
+  
   if (deliveryTime < createdTime) {
     throw new CustomError(
       StatusCodes.BAD_REQUEST,
