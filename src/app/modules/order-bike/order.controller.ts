@@ -37,18 +37,17 @@ const verifyPayment = catchAsync(async (req, res) => {
 //get users order
 const getSpecificOrder = catchAsync(async (req, res) => {
   const userEmail = req?.user?.email;
-  console.log(userEmail);
+  const query = req?.query
   
-  // const {email} = user!.email;
-  // console.log(email);
   
-  const order = await orderServices.getOrdersFromDB(userEmail);
+  const order = await orderServices.getSpecificOrdersFromDB(userEmail, query);
 
   sendResponse(res, {
     success: true,
     message: "Order retrieved successfully",
     statusCode: StatusCodes.OK,
-    data: order,
+    totalCount: order?.totalCount,
+    data: order?.result,
   });
  
 });

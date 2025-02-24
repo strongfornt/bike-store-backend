@@ -120,13 +120,17 @@ const verifyPayment = async (orderID: string) => {
 };
 
 //get all order
-const getOrdersFromDB = async (email: string) => {
-  const orders = await OrderModel.find({ email })
-    .sort({ createdAt: -1 })
-    .select("-updatedAt");
-  console.log(orders);
-
-  return orders;
+const getSpecificOrdersFromDB = async (email: string, query:any) => {
+  const orders = new QueryBuilder(OrderModel.find({ email }), query)
+    .sort()
+    .paginate()
+    .excludeFields("-updatedAt");
+    const result = await orders.modelQuery
+  const totalCount = await OrderModel.countDocuments()
+  return {
+    totalCount,
+    result
+  };
 };
 const getAllOrdersFromDB = async (query: any) => {
   const orders = new QueryBuilder(OrderModel.find(), query)
@@ -135,10 +139,10 @@ const getAllOrdersFromDB = async (query: any) => {
     .excludeFields("-updatedAt");
 
   const response = await orders.modelQuery;
-  const totalCount = await OrderModel.countDocuments()
+  const totalCount = await OrderModel.countDocuments();
   return {
     totalCount,
-    response
+    response,
   };
 };
 
@@ -162,6 +166,6 @@ export const orderServices = {
   createOrderIntoDB,
   calculateRevenueIntoDB,
   verifyPayment,
-  getOrdersFromDB,
+  getSpecificOrdersFromDB,
   getAllOrdersFromDB,
 };
