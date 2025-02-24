@@ -4,12 +4,14 @@ import sendResponse from "../../utils/sendResponse";
 import { AdminService } from "./admin.service";
 
 const getAllUser = catchAsync(async (req, res, next) => {
-  const result = await AdminService.getAllUsersFromDB();
+  const query = req.query
+  const result = await AdminService.getAllUsersFromDB(query);
   sendResponse(res, {
     success: true,
     message: "Users retrieved successfully",
     statusCode: StatusCodes.OK,
-    data: result,
+    totalCount:result?.totalCount,
+    data: result?.result,
   });
 });
 

@@ -50,7 +50,6 @@ const createOrderIntoDB = async (order: IOrderDetails) => {
   // const formattedDate = `${
   //   estimatedDeliveryDate.getMonth() + 1
   // }/${estimatedDeliveryDate.getDate()}/${estimatedDeliveryDate.getFullYear()}`;
-  
 
   const orderData = {
     email: user?.email,
@@ -84,7 +83,6 @@ const createOrderIntoDB = async (order: IOrderDetails) => {
     });
   }
 
- 
   return payment.checkout_url;
 };
 
@@ -130,13 +128,18 @@ const getOrdersFromDB = async (email: string) => {
 
   return orders;
 };
-const getAllOrdersFromDB = async (query:any) => {
-  const orders = new QueryBuilder(OrderModel.find(),query).sort().paginate().excludeFields('-updatedAt')
-  
-const response = await orders.modelQuery
-  
+const getAllOrdersFromDB = async (query: any) => {
+  const orders = new QueryBuilder(OrderModel.find(), query)
+    .sort()
+    .paginate()
+    .excludeFields("-updatedAt");
 
-  return response;
+  const response = await orders.modelQuery;
+  const totalCount = await OrderModel.countDocuments()
+  return {
+    totalCount,
+    response
+  };
 };
 
 // Calculate Revenue from Orders
@@ -160,5 +163,5 @@ export const orderServices = {
   calculateRevenueIntoDB,
   verifyPayment,
   getOrdersFromDB,
-  getAllOrdersFromDB
+  getAllOrdersFromDB,
 };

@@ -63,7 +63,8 @@ const getAllOrders = catchAsync(async (req, res) => {
     success: true,
     message: "Orders retrieved successfully",
     statusCode: StatusCodes.OK,
-    data: order,
+    totalCount: order?.totalCount,
+    data: order?.response,
   });
  
 });

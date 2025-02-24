@@ -4,6 +4,7 @@ interface TResponse <T> {
     statusCode: number;
     success: boolean;
     message?: string;
+    totalCount?: number | null;
     data?: T;
   }
 
@@ -15,6 +16,7 @@ const sendResponse = <T>(
     success: data?.success,
     message: data?.message,
     statusCode: data?.statusCode,
+    totalCount: data?.totalCount || null,  // add totalCount if applicable for pagination
     data: data?.data,
   });
 };

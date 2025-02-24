@@ -4,10 +4,16 @@ import { UserModel } from "../user/user.model";
 import { IDeactivatedUserIntoDB } from "./admin.interface";
 import { OrderModel } from "../order-bike/order.model";
 import { validOrderStatuses } from "./admin.const";
+import QueryBuilder from "../../builder/Query.builder";
 
-const getAllUsersFromDB = async () => {
-  const response = await UserModel.find();
-  return response;
+const getAllUsersFromDB = async (query:any) => {
+  const response = new QueryBuilder(UserModel.find(), query).sort().paginate();
+  const result = await response.modelQuery;
+  const totalCount = await UserModel.countDocuments()
+  return {
+    result,
+    totalCount
+  };
 };
 
 const updateUserStatusIntoDB = async (payload: IDeactivatedUserIntoDB) => {

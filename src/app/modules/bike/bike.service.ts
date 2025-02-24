@@ -21,7 +21,14 @@ const getAllBikesFromDB = async (query: any) => {
     .paginate()
     .excludeFields("-createdAt -updatedAt");
   const result = await response.modelQuery;
-  return result;
+
+  const totalCount = await BikeModel.countDocuments()
+
+
+ return {
+  totalCount,
+  result
+ }
 };
 
 // get specific bike from db =================================================================
